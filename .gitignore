@@ -1,5 +1,5 @@
 # dependencies
-backend/config/.env
+# backend/config/.env
 frontend/node_modules
 backend/node_modules
 socket/node_modules
