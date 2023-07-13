@@ -9,10 +9,9 @@
   "scripts": {
     "server": "nodemon server.js",
     "start": "node server.js",
-    "dev": "concurrently \" npm run server \" \" npm start --prefix ../frontend \" \" npm start --prefix ../socket \"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false"
+    "dev": "concurrently \" npm run server \" \" npm start --prefix ../frontend \" \" npm start --prefix ../socket \""
   },
-  "author": "shahriar Sajeeb",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
