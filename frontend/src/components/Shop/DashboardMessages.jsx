@@ -152,19 +152,19 @@ const DashboardMessages = () => {
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    setImages(file);
-    imageSendingHandler(file);
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setImages(reader.result);
+        imageSendingHandler(reader.result);
+      }
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   const imageSendingHandler = async (e) => {
-    const formData = new FormData();
-
-    formData.append("images", e);
-    formData.append("sender", seller._id);
-    formData.append("text", newMessage);
-    formData.append("conversationId", currentChat._id);
-
     const receiverId = currentChat.members.find(
       (member) => member !== seller._id
     );
@@ -177,10 +177,11 @@ const DashboardMessages = () => {
 
     try {
       await axios
-        .post(`${server}/message/create-new-message`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        .post(`${server}/message/create-new-message`, {
+          images: e,
+          sender: seller._id,
+          text: newMessage,
+          conversationId: currentChat._id,
         })
         .then((res) => {
           setImages();
@@ -363,7 +364,8 @@ const SellerInbox = ({
         {messages &&
           messages.map((item, index) => {
             return (
-              <div key={index}
+              <div
+                key={index}
                 className={`flex w-full my-2 ${
                   item.sender === sellerId ? "justify-end" : "justify-start"
                 }`}

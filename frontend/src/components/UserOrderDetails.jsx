@@ -24,7 +24,7 @@ const UserOrderDetails = () => {
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, [dispatch, user._id]);
 
   const data = orders && orders.find((item) => item._id === id);
 

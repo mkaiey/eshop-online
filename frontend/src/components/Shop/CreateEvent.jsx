@@ -56,7 +56,7 @@ const CreateEvent = () => {
       navigate("/dashboard-events");
       window.location.reload();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, error, success]);
 
   const handleImageChange = (e) => {

@@ -64,8 +64,8 @@ const UserInbox = () => {
 
   useEffect(() => {
     if (user) {
-      const userId = user?._id;
-      socketId.emit("addUser", userId);
+      const sellerId = user?._id;
+      socketId.emit("addUser", sellerId);
       socketId.on("getUsers", (data) => {
         setOnlineUsers(data);
       });
@@ -150,19 +150,19 @@ const UserInbox = () => {
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    setImages(file);
-    imageSendingHandler(file);
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setImages(reader.result);
+        imageSendingHandler(reader.result);
+      }
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   const imageSendingHandler = async (e) => {
-    const formData = new FormData();
-
-    formData.append("images", e);
-    formData.append("sender", user._id);
-    formData.append("text", newMessage);
-    formData.append("conversationId", currentChat._id);
-
     const receiverId = currentChat.members.find(
       (member) => member !== user._id
     );
@@ -175,10 +175,11 @@ const UserInbox = () => {
 
     try {
       await axios
-        .post(`${server}/message/create-new-message`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        .post(`${server}/message/create-new-message`, {
+          images: e,
+          sender: user._id,
+          text: newMessage,
+          conversationId: currentChat._id,
         })
         .then((res) => {
           setImages();
@@ -276,14 +277,14 @@ const MessageList = ({
     const getUser = async () => {
       try {
         const res = await axios.get(`${server}/shop/get-shop-info/${userId}`);
-
         setUser(res.data.shop);
       } catch (error) {
         console.log(error);
       }
     };
     getUser();
-  }, [me, data, setActiveStatus, online]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [me, data]);
 
   return (
     <div
@@ -311,7 +312,7 @@ const MessageList = ({
         )}
       </div>
       <div className="pl-3">
-        <h1 className="text-[18px]">{userData?.name}</h1>
+        <h1 className="text-[18px]">{user?.name}</h1>
         <p className="text-[16px] text-[#000c]">
           {!loading && data?.lastMessageId !== userData?._id
             ? "You:"
@@ -378,8 +379,7 @@ const SellerInbox = ({
               {item.images && (
                 <img
                   src={`${item.images?.url}`}
-                  className="w-[300px] h-[300px] object-cover rounded-[10px] ml-2 mb-2"
-                  alt=""
+                  className="w-[300px] h-[300px] object-cover rounded-[10px] ml-2 mb-2" alt=""
                 />
               )}
               {item.text !== "" && (
