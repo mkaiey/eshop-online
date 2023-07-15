@@ -7,7 +7,7 @@ import {
   AiOutlineDelete,
 } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { backend_url, server } from "../../server";
+import { server } from "../../server";
 import styles from "../../styles/styles";
 import { DataGrid } from "@material-ui/data-grid";
 import { Button } from "@material-ui/core";
@@ -44,7 +44,7 @@ const ProfileContent = ({ active }) => {
       toast.success(successMessage);
       dispatch({ type: "clearMessages" });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, successMessage]);
 
   const handleSubmit = (e) => {
@@ -53,27 +53,30 @@ const ProfileContent = ({ active }) => {
   };
 
   const handleImage = async (e) => {
-    const file = e.target.files[0];
-    setAvatar(file);
+    const reader = new FileReader();
 
-    const formData = new FormData();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setAvatar(reader.result);
+        axios
+          .put(
+            `${server}/user/update-avatar`,
+            { avatar: reader.result },
+            {
+              withCredentials: true,
+            }
+          )
+          .then((response) => {
+            dispatch(loadUser());
+            toast.success("avatar updated successfully!");
+          })
+          .catch((error) => {
+            toast.error(error);
+          });
+      }
+    };
 
-    formData.append("image", e.target.files[0]);
-
-    await axios
-      .put(`${server}/user/update-avatar`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      })
-      .then((response) => {
-         dispatch(loadUser());
-         toast.success("avatar updated successfully!");
-      })
-      .catch((error) => {
-        toast.error(error);
-      });
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   return (
@@ -84,7 +87,7 @@ const ProfileContent = ({ active }) => {
           <div className="flex justify-center w-full">
             <div className="relative">
               <img
-                src={`${backend_url}${user?.avatar}`}
+                src={`${user?.avatar?.url}`}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
                 alt=""
               />
@@ -207,7 +210,7 @@ const AllOrders = () => {
 
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const columns = [
@@ -293,10 +296,11 @@ const AllRefundOrders = () => {
 
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const eligibleOrders = orders && orders.filter((item) => item.status === "Processing refund");
+  const eligibleOrders =
+    orders && orders.filter((item) => item.status === "Processing refund");
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -352,7 +356,7 @@ const AllRefundOrders = () => {
   const row = [];
 
   eligibleOrders &&
-   eligibleOrders.forEach((item) => {
+    eligibleOrders.forEach((item) => {
       row.push({
         id: item._id,
         itemsQty: item.cart.length,
@@ -381,7 +385,7 @@ const TrackOrder = () => {
 
   useEffect(() => {
     dispatch(getAllOrdersOfUser(user._id));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const columns = [

@@ -614,19 +614,19 @@ export const footerProductLinks = [
 
 export const footercompanyLinks = [
   {
-    name: "Game & Video",
+    name: "Game & Videos",
   },
   {
-    name: "Phone &Tablets",
+    name: "Phone & Tablets",
   },
   {
     name: "Computers & Laptop",
   },
   {
-    name: "Sport Watches",
+    name: "Sport & Accesories",
   },
   {
-    name: "Events",
+    name: "Lifestyle & Fashions",
   },
 ];
 

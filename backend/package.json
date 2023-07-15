@@ -11,7 +11,7 @@
     "start": "node server.js",
     "dev": "concurrently \" npm run server \" \" npm start --prefix ../frontend \" \" npm start --prefix ../socket \""
   },
-  "author": "",
+  "author": "webShop",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
