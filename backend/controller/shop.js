@@ -67,7 +67,7 @@ const createActivationToken = (seller) => {
   });
 };
 
-// activate user
+// activate seller
 router.post(
   "/activation",
   catchAsyncErrors(async (req, res, next) => {
@@ -170,6 +170,8 @@ router.get(
       res.cookie("seller_token", null, {
         expires: new Date(Date.now()),
         httpOnly: true,
+        sameSite: "none",
+        secure: true,
       });
       res.status(201).json({
         success: true,
@@ -333,7 +335,7 @@ router.put(
   })
 );
 
-// delete seller withdraw merthods --- only seller
+// delete seller withdraw methods --- only seller
 router.delete(
   "/delete-withdraw-method/",
   isSeller,

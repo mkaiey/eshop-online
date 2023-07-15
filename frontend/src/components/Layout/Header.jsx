@@ -278,7 +278,7 @@ const Header = ({ activeHeading }) => {
                   <div className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3">
                     {searchData.map((i, index) => {
                       return (
-                        <Link to={`/product/${i._id}`}key={index}>
+                        <Link to={`/product/${i._id}`} key={index}>
                           <div className="w-full flex items-start-py-3">
                             <img
                               src={`${i.images[0]?.url}`}
