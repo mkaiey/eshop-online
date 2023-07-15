@@ -6,18 +6,18 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: ['https://eshop-online-77vr.vercel.app',],
+  origin: ["https://eshop-online-77vr.vercel.app",],
   credentials: true
 }));
 
-app.use(express.json());
+
+app.use(express.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({extended: true, limit: "50mb"}));
 app.use(cookieParser());
 
 app.use("/test", (req, res) => {
   res.send("Hello world!");
 });
-
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
 // config
 if (process.env.NODE_ENV !== "PRODUCTION") {
